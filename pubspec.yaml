@@ -1,0 +1,17 @@
+name: dedsec_workspace
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.5
+
+workspace:
+  - app
+  - packages/dedsec_core
+  - packages/dedsec_crypto
+  - packages/dedsec_llm
+  - packages/dedsec_api_client
+  - packages/dedsec_ui
+  - packages/dedsec_otslog
+
+dev_dependencies:
+  melos: ^7.7.0

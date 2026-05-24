@@ -1,0 +1,54 @@
+# Dart / Flutter
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+**/build/
+**/.dart_tool/
+pubspec.lock
+**/pubspec.lock
+
+# FVM
+.fvm/flutter_sdk
+.fvm/versions
+.fvm/release
+.fvm/version
+.fvm/fvm_config.json
+
+# Melos
+.melos_tool/
+melos_*.iml
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/launch.json
+.vscode/tasks.json
+
+# macOS
+.DS_Store
+
+# iOS / Xcode (covered also by per-project .gitignore in app/ios/)
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/ephemeral/
+**/.symlinks/
+
+# Android (covered also by per-project .gitignore in app/android/)
+**/android/.gradle/
+**/android/local.properties
+**/android/key.properties
+**/android/captures/
+
+# Coverage
+coverage/
+*.lcov
+
+# Generated code
+*.g.dart
+*.freezed.dart
+*.mocks.dart

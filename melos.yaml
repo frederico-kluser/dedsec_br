@@ -1,0 +1,30 @@
+name: dedsec
+
+packages:
+  - app
+  - packages/*
+
+scripts:
+  analyze:
+    description: Run flutter analyze across all packages
+    run: melos exec -- fvm flutter analyze
+
+  test:
+    description: Run flutter test across all packages
+    run: melos exec --concurrency=1 -- fvm flutter test
+
+  format:
+    description: Format Dart code across all packages
+    run: melos exec -- dart format .
+
+  clean:
+    description: Clean build artifacts across all packages
+    run: melos exec -- fvm flutter clean
+
+  ios:
+    description: Run app on iOS Simulator
+    run: cd app && fvm flutter run -d iphone --dart-define=ENV=dev --dart-define=API_BASE_URL=https://api.dedsec.local
+
+  android:
+    description: Run app on Android Emulator
+    run: cd app && fvm flutter run -d emulator --dart-define=ENV=dev --dart-define=API_BASE_URL=https://api.dedsec.local
