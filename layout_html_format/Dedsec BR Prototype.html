@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<title>Dedsec_BR — protótipo de interface</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Anton&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="src/styles.css"/>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- React + Babel runtime -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<!-- ── 1. Constants (no deps) ── -->
+<script type="text/babel" src="src/constants/colors.jsx"></script>
+<script type="text/babel" src="src/constants/fonts.jsx"></script>
+<script type="text/babel" src="src/constants/moderation.jsx"></script>
+
+<!-- ── 2. Hooks (depend on constants) ── -->
+<script type="text/babel" src="src/hooks/useTick/index.jsx"></script>
+<script type="text/babel" src="src/hooks/useScramble/index.jsx"></script>
+<script type="text/babel" src="src/hooks/useUser/index.jsx"></script>
+<script type="text/babel" src="src/hooks/useTopics/index.jsx"></script>
+<script type="text/babel" src="src/hooks/useForumNav/index.jsx"></script>
+
+<!-- ── 3. Atoms (depend on constants + hooks) ── -->
+<script type="text/babel" src="src/atoms/Halftone/index.jsx"></script>
+<script type="text/babel" src="src/atoms/Grain/index.jsx"></script>
+<script type="text/babel" src="src/atoms/Scanlines/index.jsx"></script>
+<script type="text/babel" src="src/atoms/Glitch/index.jsx"></script>
+<script type="text/babel" src="src/atoms/Wordmark/index.jsx"></script>
+<script type="text/babel" src="src/atoms/Stencil/index.jsx"></script>
+<script type="text/babel" src="src/atoms/PixelChip/index.jsx"></script>
+<script type="text/babel" src="src/atoms/PixelBar/index.jsx"></script>
+<script type="text/babel" src="src/atoms/Btn/index.jsx"></script>
+<script type="text/babel" src="src/atoms/GhostBtn/index.jsx"></script>
+<script type="text/babel" src="src/atoms/CautionTape/index.jsx"></script>
+<script type="text/babel" src="src/atoms/Skull/index.jsx"></script>
+<script type="text/babel" src="src/atoms/Eye/index.jsx"></script>
+<script type="text/babel" src="src/atoms/Avatar/index.jsx"></script>
+
+<!-- ── 4. Molecules (depend on atoms) ── -->
+<script type="text/babel" src="src/molecules/ComicPanel/index.jsx"></script>
+<script type="text/babel" src="src/molecules/TopBar/index.jsx"></script>
+<script type="text/babel" src="src/molecules/TabBar/index.jsx"></script>
+<script type="text/babel" src="src/molecules/ScopeChip/index.jsx"></script>
+<script type="text/babel" src="src/molecules/NewsCard/index.jsx"></script>
+<script type="text/babel" src="src/molecules/LoaderShowcase/index.jsx"></script>
+<script type="text/babel" src="src/molecules/TokenStreamPanel/index.jsx"></script>
+<script type="text/babel" src="src/molecules/BadgeCarousel/index.jsx"></script>
+<script type="text/babel" src="src/molecules/BadgeMosaic/index.jsx"></script>
+
+<!-- ── 5. Organisms ── -->
+<script type="text/babel" src="src/organisms/ModerationOverlay/index.jsx"></script>
+<script type="text/babel" src="src/organisms/AnalysisOverlay/index.jsx"></script>
+<script type="text/babel" src="src/organisms/BadgeShareModal/index.jsx"></script>
+
+<!-- ── 5b. Loaders ── -->
+<script type="text/babel" src="src/organisms/loaders/LoaderTerminal/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderHalftone/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderRadar/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderDataTape/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderCounter/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderGlitch/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderTokenStream/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderBinaryRain/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderSpectrum/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderGlyphDecode/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderTokenAttention/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderTokenBeam/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderTokenRAG/index.jsx"></script>
+<script type="text/babel" src="src/organisms/loaders/LoaderTokenLayers/index.jsx"></script>
+
+<!-- ── 6. Templates ── -->
+<script type="text/babel" src="src/templates/AndroidDevice/index.jsx"></script>
+
+<!-- ── 6b. Utils (shared primitives used by pages) ── -->
+<script type="text/babel" src="src/utils/format.jsx"></script>
+<script type="text/babel" src="src/utils/ranking.jsx"></script>
+<script type="text/babel" src="src/utils/ScreenRoot/index.jsx"></script>
+<script type="text/babel" src="src/utils/ScrollArea/index.jsx"></script>
+<script type="text/babel" src="src/utils/BackHeader/index.jsx"></script>
+<script type="text/babel" src="src/utils/StickyFooter/index.jsx"></script>
+<script type="text/babel" src="src/utils/Toggle/index.jsx"></script>
+<script type="text/babel" src="src/utils/StatBox/index.jsx"></script>
+<script type="text/babel" src="src/utils/RankingPanel/index.jsx"></script>
+<script type="text/babel" src="src/utils/achievements.jsx"></script>
+
+<!-- ── 7. Pages ── -->
+<script type="text/babel" src="src/pages/Splash/index.jsx"></script>
+<script type="text/babel" src="src/pages/Onboarding/index.jsx"></script>
+<script type="text/babel" src="src/pages/Interests/index.jsx"></script>
+<script type="text/babel" src="src/pages/City/index.jsx"></script>
+<script type="text/babel" src="src/pages/Perms/index.jsx"></script>
+<script type="text/babel" src="src/pages/Home/Home.data.jsx"></script>
+<script type="text/babel" src="src/pages/Home/index.jsx"></script>
+<script type="text/babel" src="src/pages/Detail/index.jsx"></script>
+<script type="text/babel" src="src/pages/Generate/Generate.state.jsx"></script>
+<script type="text/babel" src="src/pages/Generate/index.jsx"></script>
+<script type="text/babel" src="src/pages/Channels/index.jsx"></script>
+<script type="text/babel" src="src/pages/Help/Help.state.jsx"></script>
+<script type="text/babel" src="src/pages/Help/index.jsx"></script>
+<script type="text/babel" src="src/pages/ForumScope/index.jsx"></script>
+<script type="text/babel" src="src/pages/ForumList/index.jsx"></script>
+<script type="text/babel" src="src/pages/Topic/Topic.state.jsx"></script>
+<script type="text/babel" src="src/pages/Topic/index.jsx"></script>
+<script type="text/babel" src="src/pages/NewPost/NewPost.analysis.jsx"></script>
+<script type="text/babel" src="src/pages/NewPost/NewPost.state.jsx"></script>
+<script type="text/babel" src="src/pages/NewPost/index.jsx"></script>
+<script type="text/babel" src="src/pages/Settings/index.jsx"></script>
+<script type="text/babel" src="src/pages/Achievements/index.jsx"></script>
+
+<!-- ── 8. App composition (last) ── -->
+<script type="text/babel" src="src/app/screenRegistry.jsx"></script>
+<script type="text/babel" src="src/templates/AppShell/index.jsx"></script>
+<script type="text/babel" src="src/app/App.state.jsx"></script>
+<script type="text/babel" src="src/app/index.jsx"></script>
+</body>
+</html>
