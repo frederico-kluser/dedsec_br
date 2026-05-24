@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+# Boot Android emulator and run the dedsec app on it.
+# Usage: ./android [extra flutter run args]
+# Env overrides:
+#   ANDROID_AVD="Pixel_API_35"        # AVD to launch
+#   NO_SNAPSHOT=1                     # cold boot (skip snapshot — use when boot looks corrupt)
+#   GPU_MODE="host"                   # or "swiftshader_indirect" for software GPU fallback
+#   EMU_LOG="/tmp/dedsec-emulator.log"  # where emulator stdout/stderr goes
+
+set -euo pipefail
+
+AVD="${ANDROID_AVD:-Pixel_API_35}"
+GPU_MODE="${GPU_MODE:-host}"
+EMU_LOG="${EMU_LOG:-/tmp/dedsec-emulator.log}"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+ADB="$(command -v adb || true)"
+if [[ -z "${ADB}" ]]; then
+  for candidate in \
+      "${ANDROID_SDK_ROOT:-}/platform-tools/adb" \
+      "${ANDROID_HOME:-}/platform-tools/adb" \
+      "/Volumes/Ext2TB/AndroidDev/Sdk/platform-tools/adb" \
+      "$HOME/Library/Android/sdk/platform-tools/adb"; do
+    if [[ -n "${candidate}" && -x "${candidate}" ]]; then
+      ADB="${candidate}"
+      break
+    fi
+  done
+fi
+
+if [[ -z "${ADB}" ]]; then
+  echo "error: adb not found. Set ANDROID_SDK_ROOT or install platform-tools." >&2
+  exit 1
+fi
+
+EMULATOR_BIN="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-/Volumes/Ext2TB/AndroidDev/Sdk}}/emulator/emulator"
+if [[ ! -x "${EMULATOR_BIN}" ]]; then
+  echo "error: emulator binary not found at ${EMULATOR_BIN}" >&2
+  exit 1
+fi
+
+# Pre-flight: warn on tight memory.
+if command -v vm_stat >/dev/null 2>&1; then
+  PAGE_SIZE=$(vm_stat | awk '/page size of/ {print $8}')
+  FREE_PAGES=$(vm_stat | awk '/Pages free/ {gsub(/\./,"",$3); print $3}')
+  SPEC_PAGES=$(vm_stat | awk '/Pages speculative/ {gsub(/\./,"",$3); print $3}')
+  FREE_GB=$(( (FREE_PAGES + SPEC_PAGES) * PAGE_SIZE / 1024 / 1024 / 1024 ))
+  if (( FREE_GB < 5 )); then
+    echo "warning: only ${FREE_GB}GB of RAM free. Close GitKraken/vitest/Chrome before continuing — emulator + Flutter build needs ~4GB." >&2
+    sleep 2
+  fi
+fi
+
+running_serial() {
+  "${ADB}" devices | awk '/^emulator-[0-9]+\t(device|offline)/ {print $1; exit}'
+}
+
+SERIAL="$(running_serial)"
+if [[ -z "${SERIAL}" ]]; then
+  echo "==> Launching Android emulator: ${AVD} (gpu=${GPU_MODE})"
+  echo "    log: ${EMU_LOG}"
+  : > "${EMU_LOG}"
+
+  EMU_ARGS=(-avd "${AVD}" -gpu "${GPU_MODE}" -netdelay none -netspeed full)
+  if [[ "${NO_SNAPSHOT:-0}" == "1" ]]; then
+    echo "    cold boot (NO_SNAPSHOT=1)"
+    EMU_ARGS+=(-no-snapshot)
+  fi
+
+  nohup "${EMULATOR_BIN}" "${EMU_ARGS[@]}" >"${EMU_LOG}" 2>&1 &
+  EMU_PID=$!
+  echo "    emulator pid: ${EMU_PID}"
+
+  echo "==> Waiting for emulator to attach (max 120s)..."
+  for _ in $(seq 1 60); do
+    if ! kill -0 "${EMU_PID}" 2>/dev/null; then
+      echo "error: emulator process died. Last 30 lines of ${EMU_LOG}:" >&2
+      tail -30 "${EMU_LOG}" >&2
+      exit 1
+    fi
+    SERIAL="$(running_serial)"
+    [[ -n "${SERIAL}" ]] && break
+    sleep 2
+  done
+  if [[ -z "${SERIAL}" ]]; then
+    echo "error: emulator did not attach within 120s. Last 30 lines of ${EMU_LOG}:" >&2
+    tail -30 "${EMU_LOG}" >&2
+    echo "" >&2
+    echo "Try: NO_SNAPSHOT=1 ./android   (cold boot, skip snapshot)" >&2
+    echo "Or:  GPU_MODE=swiftshader_indirect ./android   (software GPU)" >&2
+    exit 1
+  fi
+else
+  echo "==> Reusing running emulator: ${SERIAL}"
+fi
+
+echo "==> Waiting for ${SERIAL} to finish booting..."
+"${ADB}" -s "${SERIAL}" wait-for-device
+BOOT_DEADLINE=$(( $(date +%s) + 180 ))
+until [[ "$("${ADB}" -s "${SERIAL}" shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do
+  if (( $(date +%s) > BOOT_DEADLINE )); then
+    echo "error: device ${SERIAL} did not finish booting within 180s." >&2
+    echo "Last 30 lines of ${EMU_LOG}:" >&2
+    tail -30 "${EMU_LOG}" >&2
+    exit 1
+  fi
+  sleep 2
+done
+
+echo "==> Launching app on ${SERIAL}"
+cd "${ROOT_DIR}/app"
+exec fvm flutter run \
+  -d "${SERIAL}" \
+  --dart-define=ENV=dev \
+  --dart-define=API_BASE_URL=https://api.dedsec.local \
+  "$@"
