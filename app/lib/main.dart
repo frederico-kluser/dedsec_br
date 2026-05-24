@@ -1,60 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'app/app_scope.dart';
+import 'app/app_state.dart';
+import 'app/router.dart';
+import 'theme/colors.dart';
+import 'theme/fonts.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarColor: Colors.black,
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
   runApp(const DedsecApp());
 }
 
-class DedsecApp extends StatelessWidget {
+class DedsecApp extends StatefulWidget {
   const DedsecApp({super.key});
+  @override
+  State<DedsecApp> createState() => _DedsecAppState();
+}
 
-  static const _env = String.fromEnvironment('ENV', defaultValue: 'dev');
+class _DedsecAppState extends State<DedsecApp> {
+  final AppState _state = AppState();
+
+  @override
+  void dispose() {
+    _state.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dedsec',
+      title: 'Dedsec_BR',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00FF95),
-          brightness: Brightness.dark,
+        useMaterial3: false,
+        scaffoldBackgroundColor: COL.bg,
+        textTheme: TextTheme(
+          bodyMedium: FONT.body(),
         ),
-        useMaterial3: true,
+        colorScheme: ColorScheme.dark(
+          surface: COL.bg,
+          onSurface: COL.ink,
+          primary: COL.magenta,
+          secondary: COL.acid,
+          error: COL.danger,
+        ),
       ),
-      home: const HomePage(env: _env),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({required this.env, super.key});
-
-  final String env;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dedsec'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Hello, Dedsec',
-              style: theme.textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'env: $env',
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ],
+      home: AppScope(
+        state: _state,
+        child: const Scaffold(
+          backgroundColor: COL.bg,
+          body: SafeArea(top: false, child: AppRouter()),
         ),
       ),
     );
