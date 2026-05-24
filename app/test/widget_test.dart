@@ -1,12 +1,11 @@
+import 'package:dedsec_ui/dedsec_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:dedsec_app/main.dart';
-
 void main() {
-  testWidgets('Hello Dedsec smoke test', (WidgetTester tester) async {
+  testWidgets('DedsecApp boots into Splash screen', (tester) async {
     await tester.pumpWidget(const DedsecApp());
-
-    expect(find.text('Hello, Dedsec'), findsOneWidget);
-    expect(find.text('Dedsec'), findsWidgets);
+    await tester.pump();
+    // Splash shows the wordmark glyph with "DEDSEC_BR".
+    expect(find.text('DEDSEC_BR'), findsWidgets);
   });
 }
